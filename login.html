@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <script src="https://code.jquery.com/jquery-3.0.0.js" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="icon" href="imagenes/ElCerezoOriginal.webp">
+    <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" />
+    <title>VANTAS - GRUPO EL CEREZO</title>
+</head>
+
+<body style="background-color: #0a0806;">
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Vantas- Grupo El Cerezo</h3>
+                    </div>
+                    <div class="card-body">
+                        <form class="form" id="btnIngresar">
+                            <div class="form-group">
+                                <section class="text-center">
+                                    <img style="width: 155px;" class="text-center img-fluid"
+                                        src="imagenes/ElCerezoOriginal.webp" alt="">
+                                </section>
+                            </div>
+                            <div class="form-group">
+                                <label for="usuario">Correo</label>
+                                <input type="text" class="form-control" id="txtemail" placeholder="Ingresa tu usuario">
+                            </div>
+                            <div class="form-group">
+                                <label for="password">Contraseña</label>
+                                <div class="input-group">
+                                    <input type="password" class="form-control" id="txtpassword"
+                                        placeholder="Ingresa tu contraseña">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <input type="checkbox" id="mostrarPassword"> Mostrar
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-block" style="background-color: #00e074;">Iniciar Sesión</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.getElementById('mostrarPassword').addEventListener('change', function () {
+            const passwordInput = document.getElementById('txtpassword');
+            if (this.checked) {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        });
+    </script>
+
+    <!-- Scripts de Bootstrap y tu script para mostrar la contraseña -->
+    <script src="js/login.js" ></script>
+    <footer class="custom-footer" style="top: 110%;">
+        <div class="container">
+          <div class="row">
+            <div class="col-6" style="font-size: 7px;">
+              <p >Developed by Grupo Agricola el Cerezo.</p> 
+              <p>© 2025 - Todos los derechos reservados</p>
+            </div>
+          </div>
+        </div>
+      </footer>	
+</body>
+
+</html>

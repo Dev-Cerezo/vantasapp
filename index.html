@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover" />
+  <title>VANTAS - GRUPO EL CEREZO</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+  <style>
+    :root {
+      --bg0: #0a0806;
+      --bg1: #14110f;
+      --stroke: rgba(102, 255, 159, 0.15);
+      --accent: #00e074;
+      --accent-hover: #00c265;
+      --text: #f0fff9;
+      --text-muted: rgba(240, 255, 249, 0.65);
+      --radius: 14px;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { 
+      height: 100%; 
+      margin: 0; 
+      padding: 0; 
+      font-family: 'Inter', sans-serif; 
+      background: var(--bg0);
+      color: var(--text);
+      overflow: hidden; 
+    }
+
+    .app-wrapper {
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      height: -webkit-fill-available;
+    }
+
+    header {
+      height: 70px;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      background: rgba(10, 8, 6, 0.9);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--stroke);
+      z-index: 10;
+    }
+
+    .main-container {
+      display: flex;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    aside {
+      width: 300px;
+      background: var(--bg1);
+      border-right: 1px solid var(--stroke);
+      display: flex;
+      flex-direction: column;
+      padding: 20px;
+      overflow-y: auto;
+      gap: 15px;
+    }
+
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background: radial-gradient(circle at top left, #1a4d33 0%, var(--bg0) 100%);
+      position: relative;
+      min-width: 0;
+    }
+
+    #chatContainer {
+      flex: 1 1 auto;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .msg {
+      max-width: 85%;
+      padding: 12px 18px;
+      border-radius: 15px;
+      font-size: 14px;
+      line-height: 1.5;
+      word-wrap: break-word;
+    }
+
+    .msg.bot {
+      align-self: flex-start;
+      background: rgba(255, 255, 255, 0.05);
+      border-left: 3px solid var(--accent);
+    }
+
+    .msg.user {
+      align-self: flex-end;
+      background: rgba(0, 224, 116, 0.15);
+      border-right: 3px solid var(--accent);
+    }
+
+    /* Estilos para tablas dentro de la respuesta del bot */
+    .msg table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      border-collapse: collapse;
+      margin: 10px 0;
+      font-size: 12px;
+    }
+    .msg th { background: var(--accent); color: #000; padding: 8px; text-align: left; }
+    .msg td { border-bottom: 1px solid var(--stroke); padding: 8px; }
+
+    .input-area {
+      flex-shrink: 0;
+      padding: 20px;
+      background: #0f1714;
+      border-top: 1px solid var(--stroke);
+      display: flex;
+      gap: 10px;
+    }
+
+    input#userInput {
+      flex: 1;
+      background: #000;
+      border: 1px solid var(--stroke);
+      color: #fff;
+      padding: 12px;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    .btn-send {
+      background: var(--accent);
+      color: #052e16;
+      border: none;
+      padding: 0 25px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-send:hover { background: var(--accent-hover); }
+
+    .label-aside {
+      font-size: 10px;
+      color: var(--accent);
+      font-weight: 800;
+      margin-bottom: 4px;
+      display: block;
+      text-transform: uppercase;
+    }
+
+    .select-style {
+      width: 100%;
+      padding: 10px;
+      background: #000;
+      color: #fff;
+      border: 1px solid var(--stroke);
+      border-radius: 8px;
+      margin-bottom: 10px;
+    }
+
+    @media (max-width: 768px) {
+      .main-container { flex-direction: column; }
+      aside { 
+        width: 100%; 
+        height: auto; 
+        max-height: 200px; 
+        border-right: none; 
+        border-bottom: 1px solid var(--stroke); 
+      }
+      .msg { max-width: 90%; }
+    }
+
+    .loading-dots:after { content: '...'; animation: dots 1.5s infinite; }
+    @keyframes dots { 0% { content: '.'; } 33% { content: '..'; } 66% { content: '...'; } }
+  </style>
+</head>
+<body>
+
+<div class="app-wrapper">
+  <header>
+    <div class="brand"><h1 style="margin:0; font-size:16px; color:var(--accent);">VANTAS - GRUPO EL CEREZO</h1></div>
+    <button onclick="location.reload()" style="background:none; border:1px solid var(--stroke); color:#fff; border-radius:5px; padding:5px 10px; cursor:pointer; font-size:11px;">Reiniciar</button>
+  </header>
+
+  <div class="main-container">
+    <aside>
+      <div>
+        <label class="label-aside">Monitoreo Activo</label>
+        <select id="monitoreoManual" class="select-style">
+          <option value="mon_02">Modificaciones de nómina</option>
+          <option value="mon_01">Monitoreo de Combustible</option>
+          <option value="mon_03">Expedientes de Colaboradores</option>
+          <option value="mon_04">Consultar Lista de Precios Comercializadora</option>
+          <option value="mon_05">Inventario de equipo de computo</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="label-aside">Sucursal</label>
+        <select id="Sucursal" class="select-style">
+          <option value="BCS">BAJA CALIFORNIA SUR</option>
+          <option value="OBR">SONORA</option>
+          <option value="JAL">JALISCO</option>
+          <option value="PUR">PUREPERO</option>
+          <option value="TAN">TANGANCICUARO</option>
+          <option value="N/A">SIN ZONA</option>
+        </select>
+      </div>
+    </aside>
+
+    <main>
+      <div id="chatContainer">
+        <div class="msg bot">Sistema listo. Selecciona un monitoreo, la sucursal y consulta los datos.</div>
+      </div>
+
+      <div class="input-area">
+        <input type="text" id="userInput" placeholder="Escribe tu consulta..." autocomplete="off">
+        <button class="btn-send" onclick="sendMessage()">Enviar</button>
+      </div>
+    </main>
+  </div>
+</div>
+<script src="js/index.js"></script>
+<script src="js/login.js"></script>
+<script>
+  const N8N_WEBHOOK_URL = 'https://usuariocerezo.app.n8n.cloud/webhook/95643ab0-7e3e-4132-9f7f-afebe7f640fa';
+
+  async function sendMessage() {
+    const input = document.getElementById('userInput');
+    const container = document.getElementById('chatContainer');
+    const selectorMonitoreo = document.getElementById('monitoreoManual');
+    const selectorSucursal = document.getElementById('Sucursal');
+
+    const userText = input.value.trim();
+    if (!userText) return;
+
+    // CAPTURA DE VALORES ACTUALES
+    const contextValue = selectorMonitoreo.value;
+    const sucursalValue = selectorSucursal.value;
+
+    // 1. Mostrar mensaje del usuario
+    appendMessage('user', userText);
+    input.value = "";
+    
+    // 2. Mostrar indicador de carga
+    const loadingDiv = appendMessage('bot', 'Consultando con IA <span class="loading-dots"></span>');
+
+    try {
+      const response = await fetch(N8N_WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: userText,
+          context: contextValue,
+          sucursal: sucursalValue, // Campo agregado correctamente
+          usuario: localStorage.getItem("emailActivo"),
+          timestamp: new Date().toISOString()
+        })
+      });
+
+      if (!response.ok) throw new Error('Error en respuesta');
+
+      const data = await response.json();
+      
+      // Eliminar el mensaje de carga
+      loadingDiv.remove();
+
+      // Procesar respuesta de n8n (ajustar según la estructura de tu JSON de salida)
+      const reply = data.output || data.reply || data.message || 'Respuesta procesada correctamente.';
+      appendMessage('bot', reply);
+
+    } catch (error) {
+      if (loadingDiv) loadingDiv.remove();
+      appendMessage('bot', '❌ Error de conexión. Por favor, intenta de nuevo.');
+      console.error("Error en la petición:", error);
+    }
+  }
+
+  function appendMessage(role, text) {
+    const container = document.getElementById('chatContainer');
+    const msgDiv = document.createElement('div');
+    msgDiv.className = `msg ${role}`;
+    
+    if (role === 'bot') {
+      // Usar marked para renderizar tablas y markdown de la IA
+      msgDiv.innerHTML = marked.parse(text);
+    } else {
+      msgDiv.textContent = text;
+    }
+
+    container.appendChild(msgDiv);
+    container.scrollTop = container.scrollHeight;
+    return msgDiv;
+  }
+
+  // Escuchar tecla Enter
+  document.getElementById('userInput').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') sendMessage();
+  });
+</script>
+
+</body>
+</html>
